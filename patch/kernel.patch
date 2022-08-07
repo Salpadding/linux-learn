@@ -1,0 +1,81 @@
+diff --git a/Makefile b/Makefile
+index f5cdb72b..4a697633 100644
+--- a/Makefile
++++ b/Makefile
+@@ -221,8 +221,8 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
+ 
+ HOSTCC       = gcc
+ HOSTCXX      = g++
+-HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer
+-HOSTCXXFLAGS = -O2
++HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O1 -fomit-frame-pointer
++HOSTCXXFLAGS = -O1
+ 
+ # Decide whether to build built-in, modular, or both.
+ # Normally, just do built-in.
+@@ -521,9 +521,9 @@ endif # $(dot-config)
+ all: vmlinux
+ 
+ ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
+-KBUILD_CFLAGS	+= -Os
++KBUILD_CFLAGS	+= -O1
+ else
+-KBUILD_CFLAGS	+= -O2
++KBUILD_CFLAGS	+= -O1
+ endif
+ 
+ include $(srctree)/arch/$(SRCARCH)/Makefile
+diff --git a/arch/x86/include/asm/ptrace.h b/arch/x86/include/asm/ptrace.h
+index 0f0d9083..6eab9171 100644
+--- a/arch/x86/include/asm/ptrace.h
++++ b/arch/x86/include/asm/ptrace.h
+@@ -142,8 +142,12 @@ extern void send_sigtrap(struct task_struct *tsk, struct pt_regs *regs,
+ 			 int error_code, int si_code);
+ void signal_fault(struct pt_regs *regs, void __user *frame, char *where);
+ 
+-extern long syscall_trace_enter(struct pt_regs *);
+-extern void syscall_trace_leave(struct pt_regs *);
++#ifndef asmregparm
++# define asmregparm
++#endif
++
++extern asmregparm long syscall_trace_enter(struct pt_regs *);
++extern asmregparm void syscall_trace_leave(struct pt_regs *);
+ 
+ static inline unsigned long regs_return_value(struct pt_regs *regs)
+ {
+diff --git a/arch/x86/vdso/Makefile b/arch/x86/vdso/Makefile
+index 6b4ffedb..dd78ef68 100644
+--- a/arch/x86/vdso/Makefile
++++ b/arch/x86/vdso/Makefile
+@@ -25,7 +25,7 @@ targets += vdso.so vdso.so.dbg vdso.lds $(vobjs-y)
+ 
+ export CPPFLAGS_vdso.lds += -P -C
+ 
+-VDSO_LDFLAGS_vdso.lds = -m elf_x86_64 -Wl,-soname=linux-vdso.so.1 \
++VDSO_LDFLAGS_vdso.lds = -m64 -Wl,-soname=linux-vdso.so.1 \
+ 		      	-Wl,-z,max-page-size=4096 -Wl,-z,common-page-size=4096
+ 
+ $(obj)/vdso.o: $(src)/vdso.S $(obj)/vdso.so
+@@ -69,7 +69,7 @@ vdso32.so-$(VDSO32-y)		+= sysenter
+ vdso32-images			= $(vdso32.so-y:%=vdso32-%.so)
+ 
+ CPPFLAGS_vdso32.lds = $(CPPFLAGS_vdso.lds)
+-VDSO_LDFLAGS_vdso32.lds = -m elf_i386 -Wl,-soname=linux-gate.so.1
++VDSO_LDFLAGS_vdso32.lds = -m32 -Wl,-soname=linux-gate.so.1
+ 
+ # This makes sure the $(obj) subdirectory exists even though vdso32/
+ # is not a kbuild sub-make subdirectory.
+diff --git a/kernel/timeconst.pl b/kernel/timeconst.pl
+index eb51d76e..04612394 100644
+--- a/kernel/timeconst.pl
++++ b/kernel/timeconst.pl
+@@ -370,7 +370,7 @@ if ($hz eq '--can') {
+ 	}
+ 
+ 	@val = @{$canned_values{$hz}};
+-	if (!defined(@val)) {
++	if (!@val) {
+ 		@val = compute_values($hz);
+ 	}
+ 	output($hz, @val);

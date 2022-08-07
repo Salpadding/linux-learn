@@ -1,0 +1,26 @@
+diff --git a/Makefile b/Makefile
+index 1de0398..72d1cc9 100644
+--- a/Makefile
++++ b/Makefile
+@@ -289,7 +289,7 @@ MAKEFLAGS += -rR
+ # Make variables (CC, etc...)
+ 
+ AS		= $(CROSS_COMPILE)as
+-CC		= $(CROSS_COMPILE)gcc
++CC		= $(CROSS_COMPILE)gcc -m32
+ LD		= $(CC) -nostdlib
+ CPP		= $(CC) -E
+ AR		= $(CROSS_COMPILE)ar
+diff --git a/include/libbb.h b/include/libbb.h
+index 2cc1466..084fdaa 100644
+--- a/include/libbb.h
++++ b/include/libbb.h
+@@ -11,7 +11,7 @@
+ #define LIBBB_H 1
+ 
+ #include "platform.h"
+-
++#include <sys/resource.h>
+ #include <ctype.h>
+ #include <dirent.h>
+ #include <errno.h>
