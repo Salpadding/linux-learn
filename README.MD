@@ -25,7 +25,7 @@ brew install qemu
 
 ## 编译 linux 内核
 
-1. 下载 liunx-2.6.32.tar.bz2
+1. 下载 linux-2.6.32.tar.bz2 可以在这里找到 https://mirrors.edge.kernel.org/pub/linux/kernel/v2.6/
 2. 解压 tar -xf linux-2.6.32.tar.bz2
 3. 打补丁 
 
@@ -47,7 +47,7 @@ make ARCH=i386 -j8 # 我的docker分配了8个cpu核心
 
 ## 编译 busybox
 
-1. 下载 busybox-1.20.1.tar.gz2
+1. 下载 busybox-1.20.1.tar.gz2 可以在这里找到 https://busybox.net/downloads/
 2. 解压 tar -xf busybox-1.20.1.tar.gz2
 3. 打补丁
 
