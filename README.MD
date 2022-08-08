@@ -76,16 +76,31 @@ $SHELL ./rootfs.sh
 
 ## 启动并调试
 
-1. 安装 gnu global
+1. 安装 gdb
 
 ```sh
-brew install global
+brew install gdb
 ```
+
+2. 启动内核 等待gdb连接
 
 ```sh
 $SHELL ./qemu.sh
 ```
 
+3. gdb 连接到 remote
+
+```sh
+cd linux-2.6.32
+gdb vmlinux
+# 以下是 gdb 中的 command
+# 连接远程服务 并且在 head_32.S 中打断点
+# 开启文字界面
+target remote :1234
+b *0x1000000 
+tui enable
+layout asm
+```
 
 ## 阅读源代码
 
