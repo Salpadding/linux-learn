@@ -106,3 +106,10 @@ make ARCH=i386 cscope
 ```
 
 在 neovim 使用 ctrl + ] 就可以跳到函数里面了
+
+
+3. 对宏进行展开
+
+例如我想展开 init/main.c 可以这么做:
+
+make ARCH=i386 init/main.i

@@ -1,4 +1,7 @@
-busybox-1.20.1*
-linux-2.6.32*
-initrd.img
-ramdisk
+/busybox-1.20.1*
+/linux-2.6.32*
+/initrd.img
+/ramdisk
+/local
+notes/*.c
+notes/*.o
